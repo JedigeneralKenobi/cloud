@@ -1,0 +1,122 @@
+CODA: Parameterdarstellung - grafische Benutzeroberfläche (GUI) 
+
+Im Folgenden präsentiere ich die Ergbnisse meiner Recherche über sinnvolle Realisieruungsansätze eines Parameter-GUI für CODA:
+
+1. Anforderungen: 
+  * freie Lizenz und / oder Lizensierbar
+  * Os übergreifende Funktionstüchtigkeit (verm. Linux und Windows(?))
+  * möglichst simpel (-> einfache Einarbeitung / Wartung / Erweiterung)
+  * (garantierte) Langlebigkeit
+
+2. Umsetzungsmöglichkeiten
+
+    2.1 embedded (Web-)Server (Python / C++)
+
+        2.1.1 Möglichkeiten
+
+            - HTTP Webserver 
+              -> pros:
+                + einfache Erstellung und Wartung aufgrund sehr weit verbreitetem und bekanntem System
+                + HTTP framework Teil der Standartinstallation (Linux, Windows, Mac Os) von Python
+                + kleines Framework
+              -> cons:
+                - unzureichende Sicherheitsmaßnahmen; daher untauglich
+
+            - HTTPS Webserver 
+              -> pros: 
+                + (gleich HTTP Webserver)
+                + Sichere Verbindung
+              -> cons: 
+                - Funtionstüchtigkeit an Internetverpindung des Client und Funktionstüchtigkeit des Internets geknüpft 
+                - Fehlerquelle durch Übertagunskanal
+
+            - SSH Server 
+              -> pros:
+                - Sichere Verbindung
+                - ultimativ langlebig
+              -> cons:
+                - ein seperater Server schafft unbequeme Abhängigkeit
+                    - zentraler Server -> ein Ausfall macht das GUI allen CODA Nutzern unzugänglich
+                    - lokale Server -> Aufwändige Installation eins SSH Servers für jeden CODA GUI-Nutzer
+                - unverhältnismäßiger Aufwands-Nutzen Faktor  
+            
+
+    2.2 GUI-Toolkit/Erweiterung (Python / C++)
+
+        2.2.1 (favorisierte) Toolkits:
+
+            Es gibt eine sehr große Bandbreite an Tooklkits für C++ und Python, die Vor- und Nachteile haben; die Folgenden 
+            sind die Favoriten meiner Recherche. 
+            Alle sind (einschließlich Erweiterung) kompatibel mit Linux, Windows und Mac OS; Alle sind gut bekannt und 
+            werden aufgrund ihrer Beliebtheit auch vorraussichtlich (sehr) lange unterstützt werden.
+
+            1. GTK (Open Source - LGPL)
+                * PyGTK (Python)
+                * gtkmm (C++)
+              -> pros:
+                + weit verbreitet (einfache Wartung / Einarbeitung da evtl. Vorerfahrungen bestehen)
+                    (+ umfangreich dokumentiert)
+                + besonders gut getestet
+                + sehr umfangreich
+              -> cons:
+                - keine Windows unterstützung in neueren Versionen -> externes framework benötigt 
+                    - die Verwendung von älteren Versionen (wenn auch sehr weit verbreitet) lässt an der Langlebigkeit zweifeln
+                - nicht eigens lizensierbar 
+        
+            2. Qt (Open Source - LGPL) / kostenpflichtig lizensierbar)
+                * PyQt (Python)
+                * Qt (C++)
+              -> pros:
+                + weit verbreitet (einfache Wartung / Einarbeitung da evtl. Vorerfahrungen bestehen)
+                    (- weniger umfangreich dokumentiert)
+                + besonders gut getestet
+                + sehr umfangreich
+                + Lizensierungsoffen
+                + "schöne" Benutzeroberfläche
+              -> cons:
+                - sehr großes framework
+                - vergleichsweise "langsam"
+
+            3. Tkinter (Open Source - Python License)
+                * Tkinter (Python)
+              -> pros:
+                + sehr gut getestet
+                + umfangreich
+                + Teil der Standartinstallation von Python (Linux, Windows, Mac OS) -> keine extra Downloads
+                + Python Lizens ermöglicht das Verbreiten unter eigenen Bedingungen
+                + vergleichsweise kleines Framework
+              -> cons:
+                - weniger weit verbreitet (vgl. GTK & Qt)
+           
+            4. wxWidgets (Open Source - mod. LGPL)
+                * wxPython (Python)
+                * wxWidgets (C++)
+              -> pros:
+                + sehr gut getestet
+                + umfangreich
+                + vergleichsweise kleines Framework
+                + "offenes" framework -> sehr anpassungsfähig
+                + modifizierte LGPL ermöglicht das Verbreiten unter eigenen Bedingungen
+              -> cons:
+                - weniger weit verbreitet (vgl. GTK & Qt)
+
+
+3. Fazit
+
+    Es ist im wesentlichen einfacher einen embedded Web-Server mit HTML basiertem Interface aufzusetzen, als ein dezidiertes GUI zu 
+    erstellen. Die Zugriffsmöglichkeit auf bestimmte Parameterkonfigurationenen, die für den allgemeinen Zugang im Web gespeichert sein könnten, 
+    machen diese Umsetzungsmöglichkeit, CODA betreffend, zusätzlich attraktiv. 
+    Die hinzugefügte Fehlerquelle und potentielle Sicherheitslücke eines Übertragungskanals, wie er bei der Integration eines (Web-)Servers 
+    entsteht, zusammen mit dem verbundenen Aufwand diesen zu sichern oder ggf. einen SSH-Server zur Verfügung zu Stellen, machen diese Umsetzung
+    einer GUI für dieses Projekt jedoch untauglich.   
+
+    Die Vorgestellten Toolkits für Python und C++ erachte Ich alle als mögliche Grundlage eines Parameter-GUI für CODA. 
+    
+    Unvoreingenommen würde ich Tkinter bevorzugen, da es verschiedenen Internetquellen zufolge verlässlich, forallem aber klein und effizient ist. 
+    Als Standartmäßiger Teil des Python-Downloads garantiert diese Erweiterungen dazu Langlebigkeit und das Codebasierte UI macht (wenn auch
+    nicht so intuitiv und "schön" wie eine grafische UI) präzise und schnelle Änderungen möglich.
+    Tkinter ist außerdem ausreichend umfangreich ohne dabei erschlagend zu sein oder sich im "feature creep" zu verlieren.
+
+    Es sei allerdings dazugesagt, dass ich mit keinem dieser Erweiterungen bisher Erfahrung gemacht habe. Die Stunden die ich mit ihnen verbrachte 
+    verschafften mir zwar einen grundlegenden Eindruck, darüber hinaus bin ich jedoch mit keinem der genannten Toolkits vertraut. 
+
